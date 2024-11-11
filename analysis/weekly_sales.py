@@ -108,8 +108,13 @@ def weekly_sales_analysis(data, selected_categories_sidebar, top_categories):
         sales_by_week_growth[f"{week}_growth"] = growth
 
     # Calculate the average growth of Week_2_growth, Week_3_growth, and Week_4_growth
-    # This step assumes those columns exist
-    sales_by_week_growth['avg_growth'] = sales_by_week_growth[['Week 2_growth', 'Week 3_growth', 'Week 4_growth']].mean(axis=1)
+    # Check for growth columns dynamically and calculate average growth based on available columns
+    available_growth_columns = [col for col in sales_by_week_growth.columns if col.endswith('_growth') and col != 'avg_growth']
+    if available_growth_columns:
+        sales_by_week_growth['avg_growth'] = sales_by_week_growth[available_growth_columns].mean(axis=1).round(2)
+    else:
+        sales_by_week_growth['avg_growth'] = 0
+
 
     # Remove 'month' and 'Week 5' columns along with 'Week 5_growth'
     columns_to_remove = ['month', 'Week 5', 'Week 5_growth']
